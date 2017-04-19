@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>ZIM Frame - Fit Template</title>
+<title>Final Assignment</title>
 
 <!-- Welcome to ZIM at http://zimjs.com - Code Interactive Media Pizzazz! 				-->
 <!-- ZIM runs on the HTML Canvas powered by JavaScript and CreateJS http://createjs.com -->
@@ -11,15 +11,18 @@
 <!-- ZIM is free to use. You can donate to help improve ZIM at http://zimjs.com/donate 	-->
 
 <!-- as of ZIM 4.3.0 load createjs namespace first -->
-<script src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
+<script src="includes/createjs.js"></script>
 <script>var zon = true; // true for comments from zim code</script>
-<script src="https://d309knd7es5f10.cloudfront.net/zim_4.8.2.js"></script>
+<script src="includes/zim.js"></script><!-- add _doc to see code -->
 <!-- use zimjs.com/code/distill for minified individual functions! -->
-
+<script src="code/view.js"></script>
+<script src="code/controller.js"></script>
+<script src="code/math.js"></script>
+<script src="code/intersection.js"></script>
 <style>
-	body {background-color:#000;}
+	body {margin:0px; padding:0px; background-color:#000;}
+	#myCanvas {position:absolute; background-color:skyblue;}
 </style>
-
 <script>
 
 // SCALING OPTIONS
@@ -29,10 +32,11 @@
 // "full"		sets stage to window size with no scaling
 // "tagID"		add canvas to HTML tag of ID - set to dimensions if provided - no scaling
 
-var scaling = "fit"; // fit scales to fit the browser window while keeping the aspect ratio
-var width = 1024; // can go higher...
-var height = 768;
-var color = "#acd241";
+var scaling = "full"; // makes stage the window size but does not scale content
+var width = null;
+var height = null;
+var color = "black";
+//var stage;
 var frame = new zim.Frame(scaling, width, height, color); // see docs for more options and info
 frame.on("ready", function() {
 	zog("ready from ZIM Frame");
@@ -41,17 +45,195 @@ frame.on("ready", function() {
 	var stageW = frame.width;
 	var stageH = frame.height;
 
-	// put your code here (you can delete this code)
+	var layoutManager = new zim.LayoutManager();
+	//var p = app.makePages(stage, stageW, stageH, layoutManager);
 
-	var button = new zim.Button(140, 60, "ZIM");
-	button.center(stage); // this adds to stage as well otherwise stage.addChild(button);
-	button.on("click", function() { // on() is like addEventListener()
-		zgo("http://zimjs.com/code/frame.html"); // or relative URL, target is available too
+	//var pageResult = app.makePages(stage);
+	//var controller = app.makeController(stage, pageResult);
+
+	//load assets
+	var assets = ["bird1.png","BirdsChirping.mp3","background.png"];
+	frame.loadAssets(assets, "assets/");
+	frame.on("complete", app);
+
+	var waiter = new zim.Waiter(stage);
+	waiter.show();
+
+	function app() {
+
+		waiter.hide();
+
+		//create the background
+		var background=frame.asset("background.png");
+		zim.center(background, stage);
+
+		//create the label
+		var label = new zim.Label({
+		   text:"Drag the birds to set them free",
+		   size:20,
+		   font:"verdana",
+		   color:"#000",
+		   align:"center"
+		});
+		stage.addChild(label);
+		label.x = stageW/2;
+		label.y = 30;
+
+		//create a replay button
+	    var btnReplay = new zim.Button({
+            width:250, height:70,
+            label:"Play Again",
+        });
+
+        //create the level buttons
+	    var btnLevel1 = new zim.Button({
+            width:130, height:130,
+            label:"Level 1",
+        });
+        stage.addChild(btnLevel1);
+		btnLevel1.x = 80;
+		btnLevel1.y = (stageH/2)-150;
+		btnLevel1.on("click", function () {
+			level1();
+		});	
+
+        var btnLevel2 = new zim.Button({
+            width:130, height:130,
+            label:"Level 2",
+        });
+        stage.addChild(btnLevel2);
+		btnLevel2.x = 80;
+		btnLevel2.y = stageH/2;
+		btnLevel1.on("click", function () {
+			level2();
+		});	
+
+        var btnLevel3 = new zim.Button({
+            width:130, height:130,
+            label:"Level 3",
+        });
+        stage.addChild(btnLevel3);
+		btnLevel3.x = 80;
+		btnLevel3.y = (stageH/2)+150;
+
+        //Create the sound effects
+		var birdsChirping = frame.asset("BirdsChirping.mp3");
+
+		//Create a container for the birds
+		var birdHolder = new zim.Container();
+		stage.addChild(birdHolder);
+		birdHolder.drag({onTop:false});
+
+		//create the lines
+		var lineHolder = new zim.Container();
+		stage.addChild(lineHolder);
+		var lines = new zim.Shape(stageW, stageH);
+		var g = lines.graphics;
+		g.ss(10);
+		lines.addTo(lineHolder);
+
+		//create the birds
+		var bird;
+		for (var i =0; i<10; i++){
+			bird = frame.asset("bird1.png").clone();
+			birdHolder.addChild(bird);
+			bird.centerReg();
+			bird.scale(.6);
+		 	bird.x = zim.rand(220,background.width);
+		 	bird.y = zim.rand(100,stageH-50);
+		}
+
+
+		level1(); 	
+		function level1(){
+			var bird;
+			var lastX;
+			var lastY;
+			var currentX;
+			var currentY;
+			g.c();
+			for (var i =0; i<10; i++){
+				bird=birdHolder.getChildAt(i);
+			 	if(i==0){
+			 		g.moveTo(bird.x,bird.y).beginStroke("#432309");
+			 	}
+			 	if(i==1){
+			 		g.lineTo(bird.x,bird.y);		 		
+			 	}
+			 	else{
+			 		g.lineTo(bird.x,bird.y);
+			 	}
+			 	if(i==9){
+			 		g.lineTo(birdHolder.getChildAt(0).x,birdHolder.getChildAt(0).y);
+			 	}		       		        
+		        stage.update();
+		 	}
+		 	
+		}
+		
+
+		var damp = new zim.Damp();
+	    birdHolder.on("pressmove", function(e){
+			level1();	        	
+	    });
+	    birdHolder.on("pressup", function(e){
+			for(var i=1; i<11; i++){
+				//zog(birdHolder.getChildAt(i));
+		 		//bird=birdHolder.getChildAt(i);
+				lastX=birdHolder.getChildAt(i-1).x;
+				lastY=birdHolder.getChildAt(i-1).y;
+				currentX=birdHolder.getChildAt(i%10).x;
+				currentY=birdHolder.getChildAt(i%10).y;		 		        
+		         
+		        var p1 = new createjs.Point(lastX, lastY);
+		        var p2 = new createjs.Point(currentX, currentY);
+		        //zog(p1,p2)
+
+			  	for (var j=1; j<11; j++){
+			  		if(j==i)continue;
+			  		lastBX=birdHolder.getChildAt(j-1).x;
+					lastBY=birdHolder.getChildAt(j-1).y;
+					currentBX=birdHolder.getChildAt(j%10).x;
+					currentBY=birdHolder.getChildAt(j%10).y;		 		        
+			         
+			        var pB1 = new createjs.Point(lastBX, lastBY);
+			        var pB2 = new createjs.Point(currentBX, currentBY);
+			         //zog(pB1,pB2)
+			        if (intersection(p1,p2,pB1,pB2)) return;
+
+			    }
+
+			    
+		 	}
+		 	zog("good")
+		 	birdsChirping.play();
+		 	//add the replay button
+			btnReplay.centerReg(stage);
+			btnReplay.y = stageH/2;
+
+
+			btnReplay.on("click", function () {
+			    location.reload();
+			});		 		 			        	
+	    });
+		
+
+
+	}//end of function app
+
+	
+	frame.on("resize", function(){
+		layoutManager.resize();
+		//pageResult.layout.resize();
 	});
 
-	stage.update(); // update the stage to see any changes
 
-}); // end of ready
+	
+	
+	stage.update();
+
+
+},null,true); // end of ready-only run once
 </script>
 </head>
 
