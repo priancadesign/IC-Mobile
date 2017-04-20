@@ -5,13 +5,16 @@
 <meta charset="utf-8" />
 <title>Final Assignment</title>
 
-<!-- Welcome to ZIM at http://zimjs.com - Code Interactive Media Pizzazz! 				-->
-<!-- ZIM runs on the HTML Canvas powered by JavaScript and CreateJS http://createjs.com -->
-<!-- Founded by Inventor Dan Zen - http://danzen.com - Canadian New Media Award Winner 	-->
-<!-- ZIM is free to use. You can donate to help improve ZIM at http://zimjs.com/donate 	-->
+<!-- for Apple -->
+<!-- found user-scalable=no worked best for full screen auto scaling -->
+<meta name="viewport" content="user-scalable=no, minimal-ui" />
+<!--<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimal-ui" />--> 
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
 
 <!-- as of ZIM 4.3.0 load createjs namespace first -->
-<script src="includes/createjs.js"></script>
+<script src="includes/createjs-2015.11.26.min.js"></script>
 <script>var zon = true; // true for comments from zim code</script>
 <script src="includes/zim.js"></script><!-- add _doc to see code -->
 <!-- use zimjs.com/code/distill for minified individual functions! -->
@@ -32,9 +35,9 @@
 // "full"		sets stage to window size with no scaling
 // "tagID"		add canvas to HTML tag of ID - set to dimensions if provided - no scaling
 
-var scaling = "full"; // makes stage the window size but does not scale content
-var width = null;
-var height = null;
+var scaling = "fit"; // makes stage the window size but does not scale content
+var width = 360*2;
+var height = 640*2;
 var color = "black";
 //var stage;
 var frame = new zim.Frame(scaling, width, height, color); // see docs for more options and info
@@ -45,7 +48,20 @@ frame.on("ready", function() {
 	var stageW = frame.width;
 	var stageH = frame.height;
 
+	zim.OPTIMIZE = true; // means components will not stage.update()
+	zim.ACTIONEVENT = "mousedown"; // this is default but put here as reminder
+
 	var layoutManager = new zim.LayoutManager();
+
+	// this will hold all our layouts so we can resize them all at once
+	var layouts = new zim.LayoutManager();
+	
+	
+	// here we call functions in our model and view js files
+	// model holds all the data and view holds all the layouts (assets)
+	//var m = app.makeModel();
+	//var v = app.makeView(m, layouts);
+
 	//var p = app.makePages(stage, stageW, stageH, layoutManager);
 
 	//var pageResult = app.makePages(stage);
@@ -86,35 +102,35 @@ frame.on("ready", function() {
         });
 
         //create the level buttons
-	    var btnLevel1 = new zim.Button({
-            width:130, height:130,
-            label:"Level 1",
-        });
-        stage.addChild(btnLevel1);
-		btnLevel1.x = 80;
-		btnLevel1.y = (stageH/2)-150;
-		btnLevel1.on("click", function () {
-			level1();
-		});	
+	 //    var btnLevel1 = new zim.Button({
+  //           width:130, height:130,
+  //           label:"Level 1",
+  //       });
+  //       stage.addChild(btnLevel1);
+		// btnLevel1.x = 80;
+		// btnLevel1.y = (stageH/2)-150;
+		// btnLevel1.on("click", function () {
+		// 	level1();
+		// });	
 
-        var btnLevel2 = new zim.Button({
-            width:130, height:130,
-            label:"Level 2",
-        });
-        stage.addChild(btnLevel2);
-		btnLevel2.x = 80;
-		btnLevel2.y = stageH/2;
-		btnLevel1.on("click", function () {
-			level2();
-		});	
+  //       var btnLevel2 = new zim.Button({
+  //           width:130, height:130,
+  //           label:"Level 2",
+  //       });
+  //       stage.addChild(btnLevel2);
+		// btnLevel2.x = 80;
+		// btnLevel2.y = stageH/2;
+		// btnLevel1.on("click", function () {
+		// 	level2();
+		// });	
 
-        var btnLevel3 = new zim.Button({
-            width:130, height:130,
-            label:"Level 3",
-        });
-        stage.addChild(btnLevel3);
-		btnLevel3.x = 80;
-		btnLevel3.y = (stageH/2)+150;
+  //       var btnLevel3 = new zim.Button({
+  //           width:130, height:130,
+  //           label:"Level 3",
+  //       });
+  //       stage.addChild(btnLevel3);
+		// btnLevel3.x = 80;
+		// btnLevel3.y = (stageH/2)+150;
 
         //Create the sound effects
 		var birdsChirping = frame.asset("BirdsChirping.mp3");
@@ -139,7 +155,7 @@ frame.on("ready", function() {
 			birdHolder.addChild(bird);
 			bird.centerReg();
 			bird.scale(.6);
-		 	bird.x = zim.rand(220,background.width);
+		 	bird.x = zim.rand(50,stage.width);
 		 	bird.y = zim.rand(100,stageH-50);
 		}
 
