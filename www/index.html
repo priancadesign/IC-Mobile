@@ -54,22 +54,6 @@ frame.on("ready", function() {
 	// this will hold all our layouts so we can resize them all at once
 	var layoutManager = new zim.LayoutManager();
 
-	// var p = app.makePages(stage, stageW, stageH, layoutManager);
-
-	/////////////////////////////
-	// PAGES
-
-	var pages = new zim.Pages({
-		holder:stage,
-		// pages:[
-		// 	{page:Level2.html, swipe:[null,null,p.page2,p.page2]},
-		// 	{page:Level3.html, swipe:[null,null,p.page1,p.page1]}
-		// ],
-		transition:"slide",
-   		speed:1000
-	});
-	pages.addTo(stage);
-
 
 	//load assets
 	var assets = ["bird1.png","BirdsChirping.mp3","GameOver.mp3","background.png"];
