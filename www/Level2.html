@@ -56,20 +56,32 @@ frame.on("ready", function() {
 
 	// var p = app.makePages(stage, stageW, stageH, layoutManager);
 
-	/////////////////////////////
-	// PAGES
+	// /////////////////////////////
+	// // PAGES
 
-	var pages = new zim.Pages({
-		holder:stage,
-		// pages:[
-		// 	{page:Level2.html, swipe:[null,null,p.page2,p.page2]},
-		// 	{page:Level3.html, swipe:[null,null,p.page1,p.page1]}
-		// ],
-		transition:"slide",
-   		speed:1000
-	});
-	pages.addTo(stage);
+	// var pages = new zim.Pages({
+	// 	holder:stage,
+	// 	pages:[
+	// 		{page:p.page1, swipe:[null,null,p.page2,p.page2]},
+	// 		{page:p.page2, swipe:[null,null,p.page1,p.page1]}
+	// 	],
+	// 	transition:"slide",
+ //   		speed:1000
+	// });
+	// pages.addTo(stage);
 
+
+	// var c = app.makeController(stage, p, pages);
+
+	// here we call functions in our model and view js files
+	// model holds all the data and view holds all the layouts (assets)
+	//var m = app.makeModel();
+	//var v = app.makeView(m, layouts);
+
+	//var p = app.makePages(stage, stageW, stageH, layoutManager);
+
+	//var pageResult = app.makePages(stage);
+	//var controller = app.makeController(stage, pageResult);
 
 	//load assets
 	var assets = ["bird1.png","BirdsChirping.mp3","GameOver.mp3","background.png"];
@@ -114,21 +126,15 @@ frame.on("ready", function() {
 	    //create the level buttons
         var buttons = new zim.Container()
             .addTo(stage);
-        buttons.y=stageH-65;
+        buttons.y=stageH-80;
         var tabs = new zim.Tabs({
             width:stageW,
             tabs:["LEVEL 1", "LEVEL 2", "LEVEL 3"]
         }).addTo(buttons);
+        tabs.selectedIndex=1;
         tabs.on("change", function() {
-        	zog(tabs.selectedIndex);
-        	if(tabs.selectedIndex==1){
-        		zgo('Level2.html');
-
-        	}
-        	if(tabs.selectedIndex==2){
-        		zgo('Level3.html')
-        	}
-        	
+        	if(tabs.selectedIndex==0){zgo('index.html')};
+        	if(tabs.selectedIndex==2){zgo('Level3.html')};
 		});
  
 
@@ -153,7 +159,7 @@ frame.on("ready", function() {
 
 		//create the birds
 		var bird;
-		for (var i =0; i<10; i++){
+		for (var i =0; i<20; i++){
 			bird = frame.asset("bird1.png").clone();
 			birdHolder.addChild(bird);
 			bird.centerReg();
@@ -172,7 +178,7 @@ frame.on("ready", function() {
 			var currentX;
 			var currentY;
 			g.c();
-			for (var i =0; i<10; i++){
+			for (var i =0; i<20; i++){
 				bird=birdHolder.getChildAt(i);
 			 	if(i==0){
 			 		g.moveTo(bird.x,bird.y).beginStroke("#432309");
@@ -209,28 +215,28 @@ frame.on("ready", function() {
 				location.reload();
 			});			 
 
-	    }, 20000);
+	    }, 40000);
 
 	    birdHolder.on("pressup", function(e){
 
-			for(var i=1; i<11; i++){
+			for(var i=1; i<21; i++){
 				//zog(birdHolder.getChildAt(i));
 		 		//bird=birdHolder.getChildAt(i);
 				lastX=birdHolder.getChildAt(i-1).x;
 				lastY=birdHolder.getChildAt(i-1).y;
-				currentX=birdHolder.getChildAt(i%10).x;
-				currentY=birdHolder.getChildAt(i%10).y;		 		        
+				currentX=birdHolder.getChildAt(i%21).x;
+				currentY=birdHolder.getChildAt(i%21).y;		 		        
 		         
 		        var p1 = new createjs.Point(lastX, lastY);
 		        var p2 = new createjs.Point(currentX, currentY);
 		        //zog(p1,p2)
 
-			  	for (var j=1; j<11; j++){
+			  	for (var j=1; j<21; j++){
 			  		if(j==i)continue;
 			  		lastBX=birdHolder.getChildAt(j-1).x;
 					lastBY=birdHolder.getChildAt(j-1).y;
-					currentBX=birdHolder.getChildAt(j%10).x;
-					currentBY=birdHolder.getChildAt(j%10).y;		 		        
+					currentBX=birdHolder.getChildAt(j%21).x;
+					currentBY=birdHolder.getChildAt(j%21).y;		 		        
 			         
 			        var pB1 = new createjs.Point(lastBX, lastBY);
 			        var pB2 = new createjs.Point(currentBX, currentBY);
